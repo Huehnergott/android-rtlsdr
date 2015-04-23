@@ -45,12 +45,12 @@ import java.util.Map;
  *      href="http://www.usb.org/developers/devclass_docs/usbcdc11.pdf">Universal
  *      Serial Bus Class Definitions for Communication Devices, v1.1</a>
  */
-public class CdcAcmSerialDriver implements UsbSerialDriver {
+public class CdcAcmSerialDriver implements IUsbSerialDriver {
 
     private final String TAG = CdcAcmSerialDriver.class.getSimpleName();
 
     private final UsbDevice mDevice;
-    private final UsbSerialPort mPort;
+    private final IUsbSerialPort mPort;
 
     public CdcAcmSerialDriver(UsbDevice device) {
         mDevice = device;
@@ -63,7 +63,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
     }
 
     @Override
-    public List<UsbSerialPort> getPorts() {
+    public List<IUsbSerialPort> getPorts() {
         return Collections.singletonList(mPort);
     }
 
@@ -94,7 +94,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public UsbSerialDriver getDriver() {
+        public IUsbSerialDriver getDriver() {
             return CdcAcmSerialDriver.this;
         }
 

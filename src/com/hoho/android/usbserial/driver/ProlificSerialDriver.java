@@ -41,12 +41,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProlificSerialDriver implements UsbSerialDriver {
+public class ProlificSerialDriver implements IUsbSerialDriver {
 
     private final String TAG = ProlificSerialDriver.class.getSimpleName();
 
     private final UsbDevice mDevice;
-    private final UsbSerialPort mPort;
+    private final IUsbSerialPort mPort;
 
     public ProlificSerialDriver(UsbDevice device) {
         mDevice = device;
@@ -54,7 +54,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
     }
 
     @Override
-    public List<UsbSerialPort> getPorts() {
+    public List<IUsbSerialPort> getPorts() {
         return Collections.singletonList(mPort);
     }
 
@@ -129,7 +129,7 @@ public class ProlificSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public UsbSerialDriver getDriver() {
+        public IUsbSerialDriver getDriver() {
             return ProlificSerialDriver.this;
         }
 

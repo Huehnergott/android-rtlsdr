@@ -55,7 +55,7 @@ public class UsbSerialProber {
     }
 
     /**
-     * Finds and builds all possible {@link UsbSerialDriver UsbSerialDrivers}
+     * Finds and builds all possible {@link IUsbSerialDriver UsbSerialDrivers}
      * from the currently-attached {@link UsbDevice} hierarchy. This method does
      * not require permission from the Android USB system, since it does not
      * open any of the devices.
@@ -63,11 +63,11 @@ public class UsbSerialProber {
      * @param usbManager
      * @return a list, possibly empty, of all compatible drivers
      */
-    public List<UsbSerialDriver> findAllDrivers(final UsbManager usbManager) {
-        final List<UsbSerialDriver> result = new ArrayList<UsbSerialDriver>();
+    public List<IUsbSerialDriver> findAllDrivers(final UsbManager usbManager) {
+        final List<IUsbSerialDriver> result = new ArrayList<IUsbSerialDriver>();
 
         for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
-            final UsbSerialDriver driver = probeDevice(usbDevice);
+            final IUsbSerialDriver driver = probeDevice(usbDevice);
             if (driver != null) {
                 result.add(driver);
             }
@@ -79,19 +79,19 @@ public class UsbSerialProber {
      * Probes a single device for a compatible driver.
      * 
      * @param usbDevice the usb device to probe
-     * @return a new {@link UsbSerialDriver} compatible with this device, or
+     * @return a new {@link IUsbSerialDriver} compatible with this device, or
      *         {@code null} if none available.
      */
-    public UsbSerialDriver probeDevice(final UsbDevice usbDevice) {
+    public IUsbSerialDriver probeDevice(final UsbDevice usbDevice) {
         final int vendorId = usbDevice.getVendorId();
         final int productId = usbDevice.getProductId();
 
-        final Class<? extends UsbSerialDriver> driverClass =
+        final Class<? extends IUsbSerialDriver> driverClass =
                 mProbeTable.findDriver(vendorId, productId);
         if (driverClass != null) {
-            final UsbSerialDriver driver;
+            final IUsbSerialDriver driver;
             try {
-                final Constructor<? extends UsbSerialDriver> ctor =
+                final Constructor<? extends IUsbSerialDriver> ctor =
                         driverClass.getConstructor(UsbDevice.class);
                 driver = ctor.newInstance(usbDevice);
             } catch (NoSuchMethodException e) {

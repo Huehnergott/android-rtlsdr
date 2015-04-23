@@ -5,6 +5,13 @@ import java.io.IOException;
 import com.rtlsdr.android.SdrSerialDriver;
 
 public class E4K implements IRtlSdrTuner {
+	class e4k_band {
+		int E4K_BAND_VHF2 = 0;
+		int E4K_BAND_VHF3 = 1;
+		int E4K_BAND_UHF = 2;
+		int E4K_BAND_L = 3;
+	};
+
 	class e4k_if_filter {
 		int E4K_IF_FILTER_MIX;
 		int E4K_IF_FILTER_CHAN;
@@ -20,13 +27,6 @@ public class E4K implements IRtlSdrTuner {
 		byte r;
 		byte r_idx;
 		byte threephase;
-	};
-
-	class e4k_band {
-		int E4K_BAND_VHF2 = 0;
-		int E4K_BAND_VHF3 = 1;
-		int E4K_BAND_UHF = 2;
-		int E4K_BAND_L = 3;
 	};
 
 	class e4k_state {
@@ -100,28 +100,17 @@ public class E4K implements IRtlSdrTuner {
 			E4K_REG_ILUT2 = 0x62,
 			E4K_REG_ILUT3 = 0x63,
 			// gap
-			E4K_REG_DCTIME1 = 0x70, E4K_REG_DCTIME2 = 0x71,
-			E4K_REG_DCTIME3 = 0x72, E4K_REG_DCTIME4 = 0x73,
-			E4K_REG_PWM1 = 0x74, E4K_REG_PWM2 = 0x75, E4K_REG_PWM3 = 0x76,
-			E4K_REG_PWM4 = 0x77, E4K_REG_BIAS = 0x78,
-			E4K_REG_CLKOUT_PWDN = 0x7a, E4K_REG_CHFILT_CALIB = 0x7b,
-			E4K_REG_I2C_REG_ADDR = 0x7d, E4K_AGC_MOD_SERIAL = 0x0,
-			E4K_AGC_MOD_IF_PWM_LNA_SERIAL = 0x1,
-			E4K_AGC_MOD_IF_PWM_LNA_AUTONL = 0x2,
-			E4K_AGC_MOD_IF_PWM_LNA_SUPERV = 0x3,
-			E4K_AGC_MOD_IF_SERIAL_LNA_PWM = 0x4,
-			E4K_AGC_MOD_IF_PWM_LNA_PWM = 0x5,
-			E4K_AGC_MOD_IF_DIG_LNA_SERIAL = 0x6,
-			E4K_AGC_MOD_IF_DIG_LNA_AUTON = 0x7,
-			E4K_AGC_MOD_IF_DIG_LNA_SUPERV = 0x8,
-			E4K_AGC_MOD_IF_SERIAL_LNA_AUTON = 0x9,
-			E4K_AGC_MOD_IF_SERIAL_LNA_SUPERV = 0xa, E4K_BAND_VHF2 = 0,
-			E4K_BAND_VHF3 = 1, E4K_BAND_UHF = 2, E4K_BAND_L = 3,
-			E4K_F_MIX_BW_27M = 0, E4K_F_MIX_BW_4M6 = 8, E4K_F_MIX_BW_4M2 = 9,
-			E4K_F_MIX_BW_3M8 = 10, E4K_F_MIX_BW_3M4 = 11, E4K_F_MIX_BW_3M = 12,
-			E4K_F_MIX_BW_2M7 = 13, E4K_F_MIX_BW_2M3 = 14,
-			E4K_F_MIX_BW_1M9 = 15, E4K_IF_FILTER_MIX = 0,
-			E4K_IF_FILTER_CHAN = 1, E4K_IF_FILTER_RC = 3;
+			E4K_REG_DCTIME1 = 0x70, E4K_REG_DCTIME2 = 0x71, E4K_REG_DCTIME3 = 0x72, E4K_REG_DCTIME4 = 0x73,
+			E4K_REG_PWM1 = 0x74, E4K_REG_PWM2 = 0x75, E4K_REG_PWM3 = 0x76, E4K_REG_PWM4 = 0x77, E4K_REG_BIAS = 0x78,
+			E4K_REG_CLKOUT_PWDN = 0x7a, E4K_REG_CHFILT_CALIB = 0x7b, E4K_REG_I2C_REG_ADDR = 0x7d,
+			E4K_AGC_MOD_SERIAL = 0x0, E4K_AGC_MOD_IF_PWM_LNA_SERIAL = 0x1, E4K_AGC_MOD_IF_PWM_LNA_AUTONL = 0x2,
+			E4K_AGC_MOD_IF_PWM_LNA_SUPERV = 0x3, E4K_AGC_MOD_IF_SERIAL_LNA_PWM = 0x4, E4K_AGC_MOD_IF_PWM_LNA_PWM = 0x5,
+			E4K_AGC_MOD_IF_DIG_LNA_SERIAL = 0x6, E4K_AGC_MOD_IF_DIG_LNA_AUTON = 0x7,
+			E4K_AGC_MOD_IF_DIG_LNA_SUPERV = 0x8, E4K_AGC_MOD_IF_SERIAL_LNA_AUTON = 0x9,
+			E4K_AGC_MOD_IF_SERIAL_LNA_SUPERV = 0xa, E4K_BAND_VHF2 = 0, E4K_BAND_VHF3 = 1, E4K_BAND_UHF = 2,
+			E4K_BAND_L = 3, E4K_F_MIX_BW_27M = 0, E4K_F_MIX_BW_4M6 = 8, E4K_F_MIX_BW_4M2 = 9, E4K_F_MIX_BW_3M8 = 10,
+			E4K_F_MIX_BW_3M4 = 11, E4K_F_MIX_BW_3M = 12, E4K_F_MIX_BW_2M7 = 13, E4K_F_MIX_BW_2M3 = 14,
+			E4K_F_MIX_BW_1M9 = 15, E4K_IF_FILTER_MIX = 0, E4K_IF_FILTER_CHAN = 1, E4K_IF_FILTER_RC = 3;
 
 	private final int E4K_MASTER1_RESET = (1 << 0);
 	private final int E4K_MASTER1_NORM_STBY = (1 << 1);
@@ -158,88 +147,50 @@ public class E4K implements IRtlSdrTuner {
 
 	private final byte[] if_stage56_gain = { 3, 6, 9, 12, 15, 15, 15, 15 };
 
-	private final byte[] if_stage_gain[] = { null, if_stage1_gain,
-			if_stage23_gain, if_stage23_gain, if_stage4_gain, if_stage56_gain,
-			if_stage56_gain };
+	private final byte[] if_stage_gain[] = { null, this.if_stage1_gain, this.if_stage23_gain, this.if_stage23_gain,
+			this.if_stage4_gain, this.if_stage56_gain, this.if_stage56_gain };
 
-	private final int[] if_stage_gain_len = { 0, if_stage1_gain.length,
-			if_stage23_gain.length, if_stage23_gain.length,
-			if_stage4_gain.length, if_stage56_gain.length,
-			if_stage56_gain.length };
+	private final int[] if_stage_gain_len = { 0, this.if_stage1_gain.length, this.if_stage23_gain.length,
+			this.if_stage23_gain.length, this.if_stage4_gain.length, this.if_stage56_gain.length,
+			this.if_stage56_gain.length };
 
-	@Override
-	public int init(int param) throws IOException {
-		// TODO Auto-generated method stub
+	int closest_arr_idx(int arr[], int arr_size, int freq) {
+		int i, bi = 0;
+		int best_delta = 0xffffffff;
 
-		return e4k_init();
+		/*
+		 * iterate over the array containing a list of the center frequencies,
+		 * selecting the closest one
+		 */
+		for (i = 0; i < arr_size; i++) {
+			int delta = unsigned_delta(freq, arr[i]);
+			if (delta < best_delta) {
+				best_delta = delta;
+				bi = i;
+			}
+		}
+
+		return bi;
 	}
 
-	@Override
-	public int exit(int param) throws IOException {
-		// TODO Auto-generated method stub
+	private int e4k_enable_manual_gain(boolean manual) {
+		if (manual) {
+			/* Set LNA mode to manual */
+			e4k_reg_set_mask((byte) this.E4K_REG_AGC1, (char) this.E4K_AGC1_MOD_MASK, (char) this.E4K_AGC_MOD_SERIAL);
+
+			/* Set Mixer Gain Control to manual */
+			e4k_reg_set_mask((byte) this.E4K_REG_AGC7, (char) this.E4K_AGC7_MIX_GAIN_AUTO, (char) 0);
+		} else {
+			/* Set LNA mode to auto */
+			e4k_reg_set_mask((byte) this.E4K_REG_AGC1, (char) this.E4K_AGC1_MOD_MASK,
+					(char) this.E4K_AGC_MOD_IF_SERIAL_LNA_AUTON);
+			/* Set Mixer Gain Control to auto */
+			e4k_reg_set_mask((byte) this.E4K_REG_AGC7, (char) this.E4K_AGC7_MIX_GAIN_AUTO, (char) 1);
+
+			e4k_reg_set_mask((byte) this.E4K_REG_AGC11, (char) 0x7, (char) 0);
+		}
+
 		return 0;
-	}
-
-	@Override
-	public int set_freq(int param, long freq) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_bw(int param, int bw) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_gain(int param, int gain) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_if_gain(int param, int stage, int gain) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_gain_mode(int param, boolean manual) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private int MHZ(int x) {
-		return ((x) * 1000 * 1000);
-	}
-
-	private int KHZ(int x) {
-		return ((x) * 1000);
-	}
-
-	byte e4k_reg_read(int reg) {
-		return SdrSerialDriver.rtlsdr_i2c_read_reg((char) E4K_I2C_ADDR, reg);
-	}
-
-	int e4k_reg_write(int reg, int val) {
-		return SdrSerialDriver.rtlsdr_i2c_write_reg((byte) E4K_I2C_ADDR,
-				(char) reg, (char) val);
-	}
-
-	/*
-	 * ! \brief Set or clear some (masked) bits inside a register \param[in] e4k
-	 * reference to the tuner \param[in] reg number of the register \param[in]
-	 * mask bit-mask of the value \param[in] val data value to be written to
-	 * register \returns 0 on success, negative in case of error
-	 */
-	int e4k_reg_set_mask(byte reg, char mask, char val) {
-		byte tmp = e4k_reg_read(reg);
-
-		if ((tmp & mask) == val)
-			return 0;
-
-		return e4k_reg_write(reg, (tmp & ~mask) | (val & mask));
 	}
 
 	/*
@@ -248,8 +199,30 @@ public class E4K implements IRtlSdrTuner {
 	 * \returns 0 success, negative errors
 	 */
 	int e4k_if_filter_chan_enable(boolean on) {
-		return e4k_reg_set_mask((byte) E4K_REG_FILT3, (char) E4K_FILT3_DISABLE,
-				(char) (on ? 0 : E4K_FILT3_DISABLE));
+		return e4k_reg_set_mask((byte) this.E4K_REG_FILT3, (char) this.E4K_FILT3_DISABLE, (char) (on ? 0
+				: this.E4K_FILT3_DISABLE));
+	}
+
+	/*
+	 * ! \brief Set the gain of one of the IF gain stages \param [e4k] handle to
+	 * the tuner chip \param [stage] number of the stage (1..6) \param [value]
+	 * gain value in dB \returns 0 on success, negative in case of error
+	 */
+	int e4k_if_gain_set(int stage, int value) {
+		int rc;
+		byte mask;
+		// const struct reg_field *field;
+
+		rc = find_stage_gain((byte) stage, (byte) value);
+		if (rc < 0) {
+			return rc;
+		}
+
+		/* compute the bit-mask for the given gain field */
+		// field = if_stage_gain_regs[stage];
+		// mask = width2mask[field.width] << field->shift;
+
+		return 0;// e4k_reg_set_mask( field.reg, mask, rc << field.shift);
 	}
 
 	/*
@@ -260,15 +233,15 @@ public class E4K implements IRtlSdrTuner {
 		e4k_reg_read((byte) 0);
 
 		/* Make sure we reset everything and clear POR indicator */
-		e4k_reg_write((byte) E4K_REG_MASTER1, (byte) (E4K_MASTER1_RESET
-				| E4K_MASTER1_NORM_STBY | E4K_MASTER1_POR_DET));
+		e4k_reg_write((byte) this.E4K_REG_MASTER1,
+				(byte) (this.E4K_MASTER1_RESET | this.E4K_MASTER1_NORM_STBY | this.E4K_MASTER1_POR_DET));
 
 		/* Configure clock input */
-		e4k_reg_write((byte) E4K_REG_CLK_INP, (byte) 0x00);
+		e4k_reg_write((byte) this.E4K_REG_CLK_INP, (byte) 0x00);
 
 		/* Disable clock output */
-		e4k_reg_write((byte) E4K_REG_REF_CLK, (byte) 0x00);
-		e4k_reg_write((byte) E4K_REG_CLKOUT_PWDN, (byte) 0x96);
+		e4k_reg_write((byte) this.E4K_REG_REF_CLK, (byte) 0x00);
+		e4k_reg_write((byte) this.E4K_REG_CLKOUT_PWDN, (byte) 0x96);
 
 		/* Write some magic values into registers */
 		magic_init();
@@ -285,16 +258,14 @@ public class E4K implements IRtlSdrTuner {
 		 */
 
 		/* Set LNA mode to manual */
-		e4k_reg_write((byte) E4K_REG_AGC4, 0x10); /* High threshold */
-		e4k_reg_write((byte) E4K_REG_AGC5, 0x04); /* Low threshold */
-		e4k_reg_write((byte) E4K_REG_AGC6, 0x1a); /* LNA calib + loop rate */
+		e4k_reg_write((byte) this.E4K_REG_AGC4, 0x10); /* High threshold */
+		e4k_reg_write((byte) this.E4K_REG_AGC5, 0x04); /* Low threshold */
+		e4k_reg_write((byte) this.E4K_REG_AGC6, 0x1a); /* LNA calib + loop rate */
 
-		e4k_reg_set_mask((byte) E4K_REG_AGC1, (char) E4K_AGC1_MOD_MASK,
-				(char) E4K_AGC_MOD_SERIAL);
+		e4k_reg_set_mask((byte) this.E4K_REG_AGC1, (char) this.E4K_AGC1_MOD_MASK, (char) this.E4K_AGC_MOD_SERIAL);
 
 		/* Set Mixer Gain Control to manual */
-		e4k_reg_set_mask((byte) E4K_REG_AGC7, (char) E4K_AGC7_MIX_GAIN_AUTO,
-				(char) 0);
+		e4k_reg_set_mask((byte) this.E4K_REG_AGC7, (char) this.E4K_AGC7_MIX_GAIN_AUTO, (char) 0);
 
 		/*
 		 * #if 0/* Enable LNA Gain enhancement * / e4k_reg_set_mask(e4k,
@@ -322,10 +293,40 @@ public class E4K implements IRtlSdrTuner {
 		// e4k_if_filter_chan_enable(true);
 
 		/* Disable time variant DC correction and LUT */
-		e4k_reg_set_mask((byte) E4K_REG_DC5, (char) 0x03, (char) 0);
-		e4k_reg_set_mask((byte) E4K_REG_DCTIME1, (char) 0x03, (char) 0);
-		e4k_reg_set_mask((byte) E4K_REG_DCTIME2, (char) 0x03, (char) 0);
+		e4k_reg_set_mask((byte) this.E4K_REG_DC5, (char) 0x03, (char) 0);
+		e4k_reg_set_mask((byte) this.E4K_REG_DCTIME1, (char) 0x03, (char) 0);
+		e4k_reg_set_mask((byte) this.E4K_REG_DCTIME2, (char) 0x03, (char) 0);
 
+		return 0;
+	}
+
+	byte e4k_reg_read(int reg) {
+		return SdrSerialDriver.rtlsdr_i2c_read_reg((char) this.E4K_I2C_ADDR, reg);
+	}
+
+	/*
+	 * ! \brief Set or clear some (masked) bits inside a register \param[in] e4k
+	 * reference to the tuner \param[in] reg number of the register \param[in]
+	 * mask bit-mask of the value \param[in] val data value to be written to
+	 * register \returns 0 on success, negative in case of error
+	 */
+	int e4k_reg_set_mask(byte reg, char mask, char val) {
+		byte tmp = e4k_reg_read(reg);
+
+		if ((tmp & mask) == val) {
+			return 0;
+		}
+
+		return e4k_reg_write(reg, (tmp & ~mask) | (val & mask));
+	}
+
+	int e4k_reg_write(int reg, int val) {
+		return SdrSerialDriver.rtlsdr_i2c_write_reg((byte) this.E4K_I2C_ADDR, (char) reg, (char) val);
+	}
+
+	@Override
+	public int exit(int param) throws IOException {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -333,86 +334,29 @@ public class E4K implements IRtlSdrTuner {
 		byte[] arr;
 		int i;
 
-		if (stage >= (if_stage_gain.length))
+		if (stage >= (this.if_stage_gain.length)) {
 			return -1;
+		}
 
-		arr = if_stage_gain[stage];
+		arr = this.if_stage_gain[stage];
 
-		for (i = 0; i < if_stage_gain_len[stage]; i++) {
-			if (arr[i] == val)
+		for (i = 0; i < this.if_stage_gain_len[stage]; i++) {
+			if (arr[i] == val) {
 				return i;
+			}
 		}
 		return -1;
 	}
 
-	/*
-	 * ! \brief Set the gain of one of the IF gain stages \param [e4k] handle to
-	 * the tuner chip \param [stage] number of the stage (1..6) \param [value]
-	 * gain value in dB \returns 0 on success, negative in case of error
-	 */
-	int e4k_if_gain_set(int stage, int value) {
-		int rc;
-		byte mask;
-		// const struct reg_field *field;
+	@Override
+	public int init(int param) throws IOException {
+		// TODO Auto-generated method stub
 
-		rc = find_stage_gain((byte) stage, (byte) value);
-		if (rc < 0)
-			return rc;
-
-		/* compute the bit-mask for the given gain field */
-		// field = if_stage_gain_regs[stage];
-		// mask = width2mask[field.width] << field->shift;
-
-		return 0;// e4k_reg_set_mask( field.reg, mask, rc << field.shift);
+		return e4k_init();
 	}
 
-	private int e4k_enable_manual_gain(boolean manual) {
-		if (manual) {
-			/* Set LNA mode to manual */
-			e4k_reg_set_mask((byte) E4K_REG_AGC1, (char) E4K_AGC1_MOD_MASK,
-					(char) E4K_AGC_MOD_SERIAL);
-
-			/* Set Mixer Gain Control to manual */
-			e4k_reg_set_mask((byte) E4K_REG_AGC7,
-					(char) E4K_AGC7_MIX_GAIN_AUTO, (char) 0);
-		} else {
-			/* Set LNA mode to auto */
-			e4k_reg_set_mask((byte) E4K_REG_AGC1, (char) E4K_AGC1_MOD_MASK,
-					(char) E4K_AGC_MOD_IF_SERIAL_LNA_AUTON);
-			/* Set Mixer Gain Control to auto */
-			e4k_reg_set_mask((byte) E4K_REG_AGC7,
-					(char) E4K_AGC7_MIX_GAIN_AUTO, (char) 1);
-
-			e4k_reg_set_mask((byte) E4K_REG_AGC11, (char) 0x7, (char) 0);
-		}
-
-		return 0;
-	}
-
-	int unsigned_delta(int a, int b) {
-		if (a > b)
-			return a - b;
-		else
-			return b - a;
-	}
-
-	int closest_arr_idx(int arr[], int arr_size, int freq) {
-		int i, bi = 0;
-		int best_delta = 0xffffffff;
-
-		/*
-		 * iterate over the array containing a list of the center frequencies,
-		 * selecting the closest one
-		 */
-		for (i = 0; i < arr_size; i++) {
-			int delta = unsigned_delta(freq, arr[i]);
-			if (delta < best_delta) {
-				best_delta = delta;
-				bi = i;
-			}
-		}
-
-		return bi;
+	private int KHZ(int x) {
+		return ((x) * 1000);
 	}
 
 	int magic_init() {
@@ -426,5 +370,47 @@ public class E4K implements IRtlSdrTuner {
 		e4k_reg_write((byte) 0xa0, (byte) 0x07);
 
 		return 0;
+	}
+
+	private int MHZ(int x) {
+		return ((x) * 1000 * 1000);
+	}
+
+	@Override
+	public int set_bw(int param, int bw) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int set_freq(int param, long freq) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int set_gain(int param, int gain) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int set_gain_mode(int param, boolean manual) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int set_if_gain(int param, int stage, int gain) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	int unsigned_delta(int a, int b) {
+		if (a > b) {
+			return a - b;
+		} else {
+			return b - a;
+		}
 	}
 }

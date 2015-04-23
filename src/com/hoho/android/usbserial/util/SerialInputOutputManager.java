@@ -24,13 +24,13 @@ package com.hoho.android.usbserial.util;
 import android.hardware.usb.UsbRequest;
 import android.util.Log;
 
-import com.hoho.android.usbserial.driver.UsbSerialPort;
+import com.hoho.android.usbserial.driver.IUsbSerialPort;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * Utility class which services a {@link UsbSerialPort} in its {@link #run()}
+ * Utility class which services a {@link IUsbSerialPort} in its {@link #run()}
  * method.
  *
  * @author mike wakerly (opensource@hoho.com)
@@ -43,7 +43,7 @@ public class SerialInputOutputManager implements Runnable {
     private static final int READ_WAIT_MILLIS = 200;
     private static final int BUFSIZ = 4096;
 
-    private final UsbSerialPort mDriver;
+    private final IUsbSerialPort mDriver;
 
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
 
@@ -78,14 +78,14 @@ public class SerialInputOutputManager implements Runnable {
     /**
      * Creates a new instance with no listener.
      */
-    public SerialInputOutputManager(UsbSerialPort driver) {
+    public SerialInputOutputManager(IUsbSerialPort driver) {
         this(driver, null);
     }
 
     /**
      * Creates a new instance with the provided listener.
      */
-    public SerialInputOutputManager(UsbSerialPort driver, Listener listener) {
+    public SerialInputOutputManager(IUsbSerialPort driver, Listener listener) {
         mDriver = driver;
         mListener = listener;
     }

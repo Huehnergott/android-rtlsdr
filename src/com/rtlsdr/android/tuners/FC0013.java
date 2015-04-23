@@ -11,17 +11,9 @@ public class FC0013 implements IRtlSdrTuner {
 	final int FC0013_I2C_ADDR = 0xc6;
 	final int FC0013_CHECK_ADDR = 0x00;
 	final int FC0013_CHECK_VAL = 0xa3;
-	int[] fc0013_lna_gains = { -99, 0x02, -73, 0x03, -65, 0x05, -63, 0x04, -63,
-			0x00, -60, 0x07, -58, 0x01, -54, 0x06, 58, 0x0f, 61, 0x0e, 63,
-			0x0d, 65, 0x0c, 67, 0x0b, 68, 0x0a, 70, 0x09, 71, 0x08, 179, 0x17,
-			181, 0x16, 182, 0x15, 184, 0x14, 186, 0x13, 188, 0x12, 191, 0x11,
-			197, 0x10 };
-
-	@Override
-	public int init(int param) throws IOException {
-		fc0013_init();
-		return 0;
-	}
+	int[] fc0013_lna_gains = { -99, 0x02, -73, 0x03, -65, 0x05, -63, 0x04, -63, 0x00, -60, 0x07, -58, 0x01, -54, 0x06,
+			58, 0x0f, 61, 0x0e, 63, 0x0d, 65, 0x0c, 67, 0x0b, 68, 0x0a, 70, 0x09, 71, 0x08, 179, 0x17, 181, 0x16, 182,
+			0x15, 184, 0x14, 186, 0x13, 188, 0x12, 191, 0x11, 197, 0x10 };
 
 	@Override
 	public int exit(int param) throws IOException {
@@ -29,113 +21,37 @@ public class FC0013 implements IRtlSdrTuner {
 		return 0;
 	}
 
-	@Override
-	public int set_freq(int param, long freq) throws IOException {
-		return fc0013_set_params((int) freq, 6000000);
-	}
-
-	@Override
-	public int set_bw(int param, int bw) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_gain(int param, int gain) throws IOException {
-		return fc0013_set_lna_gain(gain);
-	}
-
-	@Override
-	public int set_if_gain(int param, int stage, int gain) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int set_gain_mode(int param, boolean manual) throws IOException {
-		return fc0013_set_gain_mode(manual);
-
-	}
-
-	private int fc0013_writereg(byte reg, byte val) {
-		byte[] data = new byte[2];
-		data[0] = reg;
-		data[1] = val;
-
-		if (SdrSerialDriver.rtlsdr_i2c_write_fn((byte) FC0013_I2C_ADDR, data,
-				(byte) 2) < 0)
-			return -1;
-
-		return 0;
-	}
-
-	private int fc0013_readreg(byte reg, byte[] val) {
-		byte[] data = new byte[2];
-		data[0] = reg;
-
-		if (SdrSerialDriver.rtlsdr_i2c_write_fn((byte) FC0013_I2C_ADDR, data,
-				(byte) 1) < 0)
-			return -1;
-
-		if (SdrSerialDriver.rtlsdr_i2c_read_fn((byte) FC0013_I2C_ADDR, data,
-				(byte) 1) < 0)
-			return -1;
-
-		val[0] = data[0];
-
-		return 0;
-	}
-
-	int fc0013_set_gain_mode(boolean manual) {
-		int ret = 0;
-		byte[] tmp = new byte[2];
-
-		ret |= fc0013_readreg((byte) 0x0d, tmp);
-
-		if (manual)
-			tmp[0] |= (1 << 3);
-		else
-			tmp[0] &= ~(1 << 3);
-
-		ret |= fc0013_writereg((byte) 0x0d, tmp[0]);
-
-		/* set a fixed IF-gain for now */
-		ret |= fc0013_writereg((byte) 0x13, (byte) 0x0a);
-
-		return ret;
-	}
-
 	int fc0013_init() {
 		int ret = 0;
 		int i;
 		byte[] reg = { 0x00, /* reg. 0x00: dummy */
-		0x09, /* reg. 0x01 */
-		0x16, /* reg. 0x02 */
-		0x00, /* reg. 0x03 */
-		0x00, /* reg. 0x04 */
-		0x17, /* reg. 0x05 */
-		0x02, /* reg. 0x06: LPF bandwidth */
-		0x0a, /* reg. 0x07: CHECK */
-		(byte) 0xff, /*
-					 * reg. 0x08: AGC Clock divide by 256, AGC gain 1/256, Loop
-					 * Bw 1/8
-					 */
-		0x6e, /* reg. 0x09: Disable LoopThrough, Enable LoopThrough: 0x6f */
-		(byte) 0xb8, /* reg. 0x0a: Disable LO Test Buffer */
-		(byte) 0x82, /* reg. 0x0b: CHECK */
-		(byte) 0xfc, /* reg. 0x0c: depending on AGC Up-Down mode, may need 0xf8 */
-		0x01, /* reg. 0x0d: AGC Not Forcing & LNA Forcing, may need 0x02 */
-		0x00, /* reg. 0x0e */
-		0x00, /* reg. 0x0f */
-		0x00, /* reg. 0x10 */
-		0x00, /* reg. 0x11 */
-		0x00, /* reg. 0x12 */
-		0x00, /* reg. 0x13 */
-		0x50, /*
-			 * reg. 0x14: DVB-t High Gain, UHF. Middle Gain: 0x48, Low Gain:
-			 * 0x40
-			 */
-		0x01, /* reg. 0x15 */
+				0x09, /* reg. 0x01 */
+				0x16, /* reg. 0x02 */
+				0x00, /* reg. 0x03 */
+				0x00, /* reg. 0x04 */
+				0x17, /* reg. 0x05 */
+				0x02, /* reg. 0x06: LPF bandwidth */
+				0x0a, /* reg. 0x07: CHECK */
+				(byte) 0xff, /*
+				 * reg. 0x08: AGC Clock divide by 256, AGC gain 1/256, Loop
+				 * Bw 1/8
+				 */
+				0x6e, /* reg. 0x09: Disable LoopThrough, Enable LoopThrough: 0x6f */
+				(byte) 0xb8, /* reg. 0x0a: Disable LO Test Buffer */
+				(byte) 0x82, /* reg. 0x0b: CHECK */
+				(byte) 0xfc, /* reg. 0x0c: depending on AGC Up-Down mode, may need 0xf8 */
+				0x01, /* reg. 0x0d: AGC Not Forcing & LNA Forcing, may need 0x02 */
+				0x00, /* reg. 0x0e */
+				0x00, /* reg. 0x0f */
+				0x00, /* reg. 0x10 */
+				0x00, /* reg. 0x11 */
+				0x00, /* reg. 0x12 */
+				0x00, /* reg. 0x13 */
+				0x50, /*
+				 * reg. 0x14: DVB-t High Gain, UHF. Middle Gain: 0x48, Low Gain:
+				 * 0x40
+				 */
+				0x01, /* reg. 0x15 */
 		};
 		/*
 		 * #if 0 switch (rtlsdr_get_tuner_clock(dev)) { case FC_XTAL_27_MHZ:
@@ -149,9 +65,47 @@ public class FC0013 implements IRtlSdrTuner {
 
 		for (i = 1; i < reg.length; i++) {
 			ret = fc0013_writereg((byte) i, reg[i]);
-			if (ret < 0)
+			if (ret < 0) {
 				break;
+			}
 		}
+
+		return ret;
+	}
+
+	private int fc0013_readreg(byte reg, byte[] val) {
+		byte[] data = new byte[2];
+		data[0] = reg;
+
+		if (SdrSerialDriver.rtlsdr_i2c_write_fn((byte) this.FC0013_I2C_ADDR, data, (byte) 1) < 0) {
+			return -1;
+		}
+
+		if (SdrSerialDriver.rtlsdr_i2c_read_fn((byte) this.FC0013_I2C_ADDR, data, (byte) 1) < 0) {
+			return -1;
+		}
+
+		val[0] = data[0];
+
+		return 0;
+	}
+
+	int fc0013_set_gain_mode(boolean manual) {
+		int ret = 0;
+		byte[] tmp = new byte[2];
+
+		ret |= fc0013_readreg((byte) 0x0d, tmp);
+
+		if (manual) {
+			tmp[0] |= (1 << 3);
+		} else {
+			tmp[0] &= ~(1 << 3);
+		}
+
+		ret |= fc0013_writereg((byte) 0x0d, tmp[0]);
+
+		/* set a fixed IF-gain for now */
+		ret |= fc0013_writereg((byte) 0x13, (byte) 0x0a);
 
 		return ret;
 	}
@@ -166,10 +120,9 @@ public class FC0013 implements IRtlSdrTuner {
 		/* mask bits off */
 		tmp[0] &= 0xe0;
 
-		for (i = 0; i < fc0013_lna_gains.length / 2; i++) {
-			if ((fc0013_lna_gains[i * 2] >= gain)
-					|| (i + 1 == (fc0013_lna_gains.length / 2))) {
-				tmp[0] |= fc0013_lna_gains[i * 2 + 1];
+		for (i = 0; i < (this.fc0013_lna_gains.length / 2); i++) {
+			if ((this.fc0013_lna_gains[i * 2] >= gain) || ((i + 1) == (this.fc0013_lna_gains.length / 2))) {
+				tmp[0] |= this.fc0013_lna_gains[(i * 2) + 1];
 				break;
 			}
 		}
@@ -194,61 +147,74 @@ public class FC0013 implements IRtlSdrTuner {
 
 		/* set VHF track */
 		ret = fc0013_set_vhf_track(freq);
-		if (ret < 0)
+		if (ret < 0) {
 			return -1;
+		}
 
 		if (freq < 300000000) {
 			/* enable VHF filter */
 			ret = fc0013_readreg((byte) 0x07, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			ret = fc0013_writereg((byte) 0x07, (byte) (tmp[0] | 0x10));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 
 			/* disable UHF & disable GPS */
 			ret = fc0013_readreg((byte) 0x14, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			ret = fc0013_writereg((byte) 0x14, (byte) (tmp[0] & 0x1f));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 		} else if (freq <= 862000000) {
 			/* disable VHF filter */
 			ret = fc0013_readreg((byte) 0x07, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			ret = fc0013_writereg((byte) 0x07, (byte) (tmp[0] & 0xef));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			;
 
 			/* enable UHF & disable GPS */
 			ret = fc0013_readreg((byte) 0x14, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			;
 			ret = fc0013_writereg((byte) 0x14, (byte) ((tmp[0] & 0x1f) | 0x40));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			;
 		} else {
 			/* disable VHF filter */
 			ret = fc0013_readreg((byte) 0x07, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			ret = fc0013_writereg((byte) 0x07, (byte) (tmp[0] & 0xef));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 
 			/* disable UHF & enable GPS */
 			ret = fc0013_readreg((byte) 0x14, tmp);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			;
 			ret = fc0013_writereg((byte) 0x14, (byte) ((tmp[0] & 0x1f) | 0x20));
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 			;
 		}
 
@@ -308,8 +274,9 @@ public class FC0013 implements IRtlSdrTuner {
 
 		/* From divided value (XDIV) determined the FA and FP value */
 		xdiv = (char) (f_vco / xtal_freq_div_2);
-		if ((f_vco - xdiv * xtal_freq_div_2) >= (xtal_freq_div_2 / 2))
+		if ((f_vco - (xdiv * xtal_freq_div_2)) >= (xtal_freq_div_2 / 2)) {
 			xdiv++;
+		}
 
 		pm = (byte) (xdiv / 8);
 		am = (byte) (xdiv - (8 * pm));
@@ -328,8 +295,7 @@ public class FC0013 implements IRtlSdrTuner {
 		}
 
 		if ((reg[1] > 15) || (reg[2] < 0x0b)) {
-			Log.e("TAG", "[FC0013] no valid PLL combination found for " + freq
-					+ " HZ!");
+			Log.e("TAG", "[FC0013] no valid PLL combination found for " + freq + " HZ!");
 			return -1;
 		}
 
@@ -340,10 +306,11 @@ public class FC0013 implements IRtlSdrTuner {
 		 * From VCO frequency determines the XIN ( fractional part of Delta
 		 * Sigma PLL) and divided value (XDIV)
 		 */
-		xin = (char) ((f_vco - (f_vco / xtal_freq_div_2) * xtal_freq_div_2) / 1000);
+		xin = (char) ((f_vco - ((f_vco / xtal_freq_div_2) * xtal_freq_div_2)) / 1000);
 		xin = (char) ((xin << 15) / (xtal_freq_div_2 / 1000));
-		if (xin >= 16384)
+		if (xin >= 16384) {
 			xin += 32768;
+		}
 
 		reg[3] = (char) (xin >> 8);
 		reg[4] = (char) (xin & 0xff);
@@ -366,35 +333,42 @@ public class FC0013 implements IRtlSdrTuner {
 
 		for (i = 1; i <= 6; i++) {
 			ret = fc0013_writereg((byte) i, (byte) reg[i]);
-			if (ret < 0)
+			if (ret < 0) {
 				return -1;
+			}
 		}
 
 		ret = fc0013_readreg((byte) 0x11, tmp);
-		if (ret < 0)
+		if (ret < 0) {
 			return -1;
-		if (multi == 64)
+		}
+		if (multi == 64) {
 			ret = fc0013_writereg((byte) 0x11, (byte) (tmp[0] | 0x04));
-		else
+		} else {
 			ret = fc0013_writereg((byte) 0x11, (byte) (tmp[0] & 0xfb));
-		if (ret < 0)
+		}
+		if (ret < 0) {
 			return -1;
+		}
 
 		/* VCO Calibration */
 		ret = fc0013_writereg((byte) 0x0e, (byte) 0x80);
-		if (ret != 0)
+		if (ret != 0) {
 			ret = fc0013_writereg((byte) 0x0e, (byte) 0x00);
+		}
 
 		/* VCO Re-Calibration if needed */
-		if (ret != 0)
+		if (ret != 0) {
 			ret = fc0013_writereg((byte) 0x0e, (byte) 0x00);
+		}
 
 		if (ret != 0) {
 			// msleep(10);
 			ret = fc0013_readreg((byte) 0x0e, tmp);
 		}
-		if (ret < 0)
+		if (ret < 0) {
 			return -1;
+		}
 
 		/* vco selection */
 		tmp[0] &= 0x3f;
@@ -403,19 +377,23 @@ public class FC0013 implements IRtlSdrTuner {
 			if (tmp[0] > 0x3c) {
 				reg[6] &= ~0x08;
 				ret = fc0013_writereg((byte) 0x06, (byte) reg[6]);
-				if (ret != 0)
+				if (ret != 0) {
 					ret = fc0013_writereg((byte) 0x0e, (byte) 0x80);
-				if (ret != 0)
+				}
+				if (ret != 0) {
 					ret = fc0013_writereg((byte) 0x0e, (byte) 0x00);
+				}
 			}
 		} else {
 			if (tmp[0] < 0x02) {
 				reg[6] |= 0x08;
 				ret = fc0013_writereg((byte) 0x06, (byte) reg[6]);
-				if (ret != 0)
+				if (ret != 0) {
 					ret = fc0013_writereg((byte) 0x0e, (byte) 0x80);
-				if (ret != 0)
+				}
+				if (ret != 0) {
 					ret = fc0013_writereg((byte) 0x0e, (byte) 0x00);
+				}
 			}
 		}
 
@@ -429,8 +407,9 @@ public class FC0013 implements IRtlSdrTuner {
 		byte[] tmp = new byte[1];
 
 		ret = fc0013_readreg((byte) 0x1d, tmp);
-		if (ret != 0)
+		if (ret != 0) {
 			return -1;
+		}
 		tmp[0] &= 0xe3;
 		if (freq <= 177500000) { /* VHF Track: 7 */
 			ret = fc0013_writereg((byte) 0x1d, (byte) (tmp[0] | 0x1c));
@@ -452,5 +431,51 @@ public class FC0013 implements IRtlSdrTuner {
 
 		// error_out:
 		return ret;
+	}
+
+	private int fc0013_writereg(byte reg, byte val) {
+		byte[] data = new byte[2];
+		data[0] = reg;
+		data[1] = val;
+
+		if (SdrSerialDriver.rtlsdr_i2c_write_fn((byte) this.FC0013_I2C_ADDR, data, (byte) 2) < 0) {
+			return -1;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int init(int param) throws IOException {
+		fc0013_init();
+		return 0;
+	}
+
+	@Override
+	public int set_bw(int param, int bw) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int set_freq(int param, long freq) throws IOException {
+		return fc0013_set_params((int) freq, 6000000);
+	}
+
+	@Override
+	public int set_gain(int param, int gain) throws IOException {
+		return fc0013_set_lna_gain(gain);
+	}
+
+	@Override
+	public int set_gain_mode(int param, boolean manual) throws IOException {
+		return fc0013_set_gain_mode(manual);
+
+	}
+
+	@Override
+	public int set_if_gain(int param, int stage, int gain) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

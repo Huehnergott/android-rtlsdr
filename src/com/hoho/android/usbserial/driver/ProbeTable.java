@@ -35,8 +35,8 @@ import java.util.Map;
  */
 public class ProbeTable {
 
-    private final Map<Pair<Integer, Integer>, Class<? extends UsbSerialDriver>> mProbeTable =
-            new LinkedHashMap<Pair<Integer,Integer>, Class<? extends UsbSerialDriver>>();
+    private final Map<Pair<Integer, Integer>, Class<? extends IUsbSerialDriver>> mProbeTable =
+            new LinkedHashMap<Pair<Integer,Integer>, Class<? extends IUsbSerialDriver>>();
 
     /**
      * Adds or updates a (vendor, product) pair in the table.
@@ -47,7 +47,7 @@ public class ProbeTable {
      * @return {@code this}, for chaining
      */
     public ProbeTable addProduct(int vendorId, int productId,
-            Class<? extends UsbSerialDriver> driverClass) {
+            Class<? extends IUsbSerialDriver> driverClass) {
         mProbeTable.put(Pair.create(vendorId, productId), driverClass);
         return this;
     }
@@ -60,7 +60,7 @@ public class ProbeTable {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public ProbeTable addDriver(Class<? extends UsbSerialDriver> driverClass) {
+    public ProbeTable addDriver(Class<? extends IUsbSerialDriver> driverClass) {
         final Method method;
 
         try {
@@ -100,7 +100,7 @@ public class ProbeTable {
      * @param productId the USB product id
      * @return the driver class matching this pair, or {@code null}
      */
-    public Class<? extends UsbSerialDriver> findDriver(int vendorId, int productId) {
+    public Class<? extends IUsbSerialDriver> findDriver(int vendorId, int productId) {
         final Pair<Integer, Integer> pair = Pair.create(vendorId, productId);
         return mProbeTable.get(pair);
     }

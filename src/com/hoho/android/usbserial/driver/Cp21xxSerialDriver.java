@@ -34,12 +34,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Cp21xxSerialDriver implements UsbSerialDriver {
+public class Cp21xxSerialDriver implements IUsbSerialDriver {
 
     private static final String TAG = Cp21xxSerialDriver.class.getSimpleName();
 
     private final UsbDevice mDevice;
-    private final UsbSerialPort mPort;
+    private final IUsbSerialPort mPort;
 
     public Cp21xxSerialDriver(UsbDevice device) {
         mDevice = device;
@@ -52,7 +52,7 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
     }
 
     @Override
-    public List<UsbSerialPort> getPorts() {
+    public List<IUsbSerialPort> getPorts() {
         return Collections.singletonList(mPort);
     }
 
@@ -109,7 +109,7 @@ public class Cp21xxSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public UsbSerialDriver getDriver() {
+        public IUsbSerialDriver getDriver() {
             return Cp21xxSerialDriver.this;
         }
 
