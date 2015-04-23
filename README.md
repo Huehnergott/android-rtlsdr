@@ -1,6 +1,11 @@
-flightfeeder-android
-====================
+radarworkx.com rtlsdr for android
+=======================================
 
-FlightFeeder app for Android
+Open source library used by our apps on Android.
 
-An Android app to send ADSB data back to FA. This app currently depends on the Avare ADSB Pro app to feed the ADSB frames over for decoding and conversion to ADEPT format before sending to FA.
+android-rtlsdr is a forked version of the bkhall/android-rtlsdr project, hosted on github.
+Initially we were using the pre-compiled binaries of librtlsdr and libusb, incorporating some hacks to get this running with JNI and the native usb drivers for java on Android. Unfortunately this is not stable and sometimes it runs into deadlocks outside our code. Luckily there exists native java code for the same purpose in bkhall/android-rtlsdr, but it contains errors and missing files as of April 2015 that are reconstructed in this forking project.
+This one should be compilable and usable out of the box, when imported as Android project into Eclipe or Andro Studio.
+
+See it working in radarworkx.com android applications!
+
