@@ -92,10 +92,10 @@ import java.util.Map;
  * @see <a href="http://www.ftdichip.com/">FTDI Homepage</a>
  * @see <a href="http://www.intra2net.com/en/developer/libftdi">libftdi</a>
  */
-public class FtdiSerialDriver implements UsbSerialDriver {
+public class FtdiSerialDriver implements IUsbSerialDriver {
 
     private final UsbDevice mDevice;
-    private final UsbSerialPort mPort;
+    private final IUsbSerialPort mPort;
 
     /**
      * FTDI chip types.
@@ -114,7 +114,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
     }
 
     @Override
-    public List<UsbSerialPort> getPorts() {
+    public List<IUsbSerialPort> getPorts() {
         return Collections.singletonList(mPort);
     }
 
@@ -197,7 +197,7 @@ public class FtdiSerialDriver implements UsbSerialDriver {
         }
 
         @Override
-        public UsbSerialDriver getDriver() {
+        public IUsbSerialDriver getDriver() {
             return FtdiSerialDriver.this;
         }
 
